@@ -8,6 +8,8 @@ function getMainHtml(stringifiedReactApp, helmet, attrs = {}) {
               ${helmet.title.toString()}
               ${helmet.meta.toString()}
               ${helmet.link.toString()}
+              ${helmet.style.toString()}
+              ${helmet.script.toString()}
               ${(attrs.links || []).join('\n')}
               ${(attrs.headScripts || []).join('\n')}
           </head>
