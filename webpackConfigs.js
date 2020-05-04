@@ -79,7 +79,7 @@ function getConfigs(attrs = {}) {
         plugins: [
             new MiniCssExtractPlugin({
                 filename: isProd ? '[name].[contenthash].css' : '[name].css',
-                chunkFilename: '[id].css',
+                chunkFilename: '[id].[contenthash].css',
                 ignoreOrder: false,
             }),
         ],

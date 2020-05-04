@@ -6,7 +6,7 @@
     "site-generator": "bin.js"
   },
   "scripts": {
-    "dev": "node bin.js -s -i siteSamples/site1",
+    "dev": "node bin.js dev -i siteSamples/site1",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

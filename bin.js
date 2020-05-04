@@ -4,13 +4,9 @@ const { program } = require('commander');
 const nodemon = require('nodemon');
 const path = require('path');
 const fsExtra = require('fs-extra');
-const util = require('util');
 const helpers = require('./helpers');
 const stringHelpers = require('./stringHelpers');
-const { exec } = require('child_process');
-
-const execPromise = util.promisify(exec);
-
+const shellHelpers = require('helpers/dist/server/shell');
 const inputDirOption = ['-i, --inputDir <inputDir>', 'inputDir', 'src'];
 const outputDirOption = ['-o, --outputDir <outputDir>', 'outputDir', 'dist'];
 const portOption = ['-p, --port <port>', 'Server port', 8080];
@@ -133,23 +129,21 @@ program
             stringHelpers.getPackageJson(siteName)
         );
 
-        execPromise(
-            `npm install --save ${packagesToInstall.join(' ')}`,
-            {
-                cwd: siteFolder,
-            }
-        )
-            .then(({ stdout, stderr }) => {
+        shellHelpers.spawnCommand('npm', siteFolder, [
+            'install',
+            '--save',
+            ...packagesToInstall,
+        ])
+            // execPromise(`npm install --save ${packagesToInstall.join(' ')}`, {
+            //     cwd: siteFolder,
+            // })
+            .then(() => {
                 fsExtra.copySync(
                     path.resolve(__dirname, 'siteSamples/templateSite'),
                     path.resolve(siteFolder, 'src')
                 );
-
-                return { stdout, stderr };
             })
-            .then(({ stdout, stderr }) => {
-                process.stdout.write(stdout);
-                process.stderr.write(stderr);
+            .then(() => {
                 console.log('========================================\n');
                 console.log('Now you probably want to:\n');
                 console.log('$ cd', siteName);
