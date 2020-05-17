@@ -37,7 +37,7 @@ program
             script: path.resolve(__dirname, 'runServer.js'),
             watch: [siteDir],
             args: [JSON.stringify(args)],
-            ext: 'jsx json js css',
+            ext: 'tsx json ts css',
         });
 
         nodemon

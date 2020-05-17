@@ -6,7 +6,7 @@
     "site-generator": "bin.js"
   },
   "scripts": {
-    "dev": "node bin.js dev -i siteSamples/site1",
+    "dev": "nodemon --exec 'node bin.js dev -i siteSamples/site1'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -31,18 +31,24 @@
     "nodemon": "^2.0.3",
     "require-from-string": "^2.0.2",
     "sass-loader": "^8.0.2",
+    "ts-loader": "^7.0.4",
     "unionfs": "^4.4.0",
     "webpack": "^4.43.0"
   },
   "peerDependencies": {
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-helmet": "^6.0.0"
+    "react-helmet": "^6.0.0",
+    "typescript": "^3.9.2"
   },
   "devDependencies": {
+    "@types/react": "^16.9.35",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-helmet": "^6.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-helmet": "^6.0.0"
+    "react-helmet": "^6.0.0",
+    "typescript": "^3.9.2"
   },
   "repository": {
     "type": "git",

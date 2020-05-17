@@ -1,6 +1,7 @@
 # TODO
-
+-   typescript support
 -   tests
+-   improve speed
 
 # DONE
 -   publicPath inside links in pages (dont actually need this, just <a href="/absolute/path">)

@@ -42,6 +42,12 @@ function getConfigs(attrs = {}) {
                     },
                 },
                 {
+                    test: /\.tsx?$/,
+                    use: {
+                        loader: 'ts-loader',
+                    },
+                },
+                {
                     test: /\.css$/,
                     use: [
                         { loader: MiniCssExtractPlugin.loader },

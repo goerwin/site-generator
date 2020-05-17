@@ -19,12 +19,12 @@ function isACssFile(filepath) {
 function getWebpackStats(webpackConfig, options = {}) {
     const outputMemFs = createFsFromVolume(new Volume());
     outputMemFs.join = path.join;
-    
+
     const webpackCompiler = webpack(webpackConfig);
-    
+
     if (options.inputFileSystem) {
         webpackCompiler.inputFileSystem = options.inputFileSystem;
-    } 
+    }
 
     webpackCompiler.outputFileSystem = outputMemFs;
 
@@ -51,13 +51,15 @@ function getOutputStructure({ publicPath, env = 'production', siteDir }) {
     const tempSiteDir = path.resolve(__dirname, '.cache/site');
     const mappedEntriesWithPages = {};
     const outputStructure = {};
+    const fileExtPrefixRegex = /\.tsx?$/;
+    const fileExtPrefix = '.tsx';
 
     return Promise.resolve()
         .then(() => {
             fsExtra.removeSync(tempSiteDir);
             fsExtra.copySync(siteDir, tempSiteDir);
 
-            const pages = glob.sync('**/*.jsx', {
+            const pages = glob.sync(`**/*${fileExtPrefix}`, {
                 cwd: path.resolve(tempSiteDir, 'pages'),
             });
 
@@ -66,9 +68,12 @@ function getOutputStructure({ publicPath, env = 'production', siteDir }) {
 
             pages.forEach((page) => {
                 const parsedPage = stringHelpers.slugify(
-                    page.replace(/.jsx?$/, '')
+                    page.replace(fileExtPrefixRegex, '')
                 );
-                const pageJSXFilepath = `./pages/${page}`;
+                const pageJSXFilepath = `./pages/${page.replace(
+                    fileExtPrefixRegex,
+                    ''
+                )}`;
                 const clientFilename = path.resolve(
                     tempSiteDir,
                     parsedPage + 'Client.jsx'
@@ -102,7 +107,7 @@ function getOutputStructure({ publicPath, env = 'production', siteDir }) {
         .then(({ clientConfig, serverConfig }) => {
             return Promise.all([getWebpackStats(clientConfig), serverConfig]);
         })
-        .then(([ clientStats, serverConfig ]) => {
+        .then(([clientStats, serverConfig]) => {
             const compilationAssets = clientStats.compilation.assets;
 
             Object.keys(compilationAssets).forEach((key) => {
@@ -154,7 +159,7 @@ function getOutputStructure({ publicPath, env = 'production', siteDir }) {
                     );
 
                     const outputPagepath = mappedEntriesWithPages[page].replace(
-                        /\.jsx?$/,
+                        fileExtPrefixRegex,
                         '.html'
                     );
 
