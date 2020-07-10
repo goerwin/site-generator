@@ -1,5 +1,6 @@
 const http = require('http');
 const path = require('path');
+const url = require('url');
 const { createFsFromVolume, Volume } = require('memfs');
 const internalIp = require('internal-ip');
 
@@ -36,15 +37,15 @@ function runServer(memFsStructure, { port = 8080 }) {
     });
 
     http.createServer((req, res) => {
-        const reqUrl = req.url;
+        const urlPathname = url.parse(req.url).pathname;
 
-        if (ASSETS_EXT_REGEX.test(reqUrl)) {
-            const ext = reqUrl.match(ASSETS_EXT_REGEX)[1];
+        if (ASSETS_EXT_REGEX.test(urlPathname)) {
+            const ext = urlPathname.match(ASSETS_EXT_REGEX)[1];
 
             res.writeHead(200, { 'Content-Type': CONTENT_TYPES[ext] });
 
             try {
-                res.write(memFs.readFileSync(reqUrl));
+                res.write(memFs.readFileSync(urlPathname));
                 res.end();
             } catch (e) {
                 res.writeHead(500);
@@ -57,7 +58,7 @@ function runServer(memFsStructure, { port = 8080 }) {
         const content = ['.html', '/index.html'].reduce((prev, el) => {
             try {
                 if (!prev) {
-                    return memFs.readFileSync(reqUrl.replace(/\/$/, '') + el);
+                    return memFs.readFileSync(urlPathname.replace(/\/$/, '') + el);
                 }
             } catch (e) {}
 
