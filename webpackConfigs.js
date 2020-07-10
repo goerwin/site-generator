@@ -45,6 +45,9 @@ function getConfigs(attrs = {}) {
                     test: /\.tsx?$/,
                     use: {
                         loader: 'ts-loader',
+                        options: {
+                            allowTsInNodeModules: true,
+                        },
                     },
                 },
                 {
