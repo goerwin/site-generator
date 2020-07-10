@@ -25,23 +25,46 @@ function getMainHtml(stringifiedReactApp, helmet, attrs = {}) {
     });
 }
 
-function getServerPageJSX(filepath) {
-    return `
+function getServerPageJSX(filepath, isTypescript) {
+    return isTypescript
+        ? `
+        import React from 'react';
+        import ReactDomServer from 'react-dom/server';
+        import { Helmet } from 'react-helmet';
+        import Page from '${filepath}';
+
+        export default {
+            html: ReactDomServer.renderToString(<Page />),
+            // NOTE: https://github.com/nfl/react-helmet/issues/469
+            helmet: Helmet.renderStatic(),
+        };
+        `
+        : `
         const React = require('react');
         const ReactDomServer = require('react-dom/server');
         const { Helmet } = require('react-helmet');
         const Page = require('${filepath}');
 
-        module.exports = {
+        module.exports.default = {
             html: ReactDomServer.renderToString(<Page />),
             // NOTE: https://github.com/nfl/react-helmet/issues/469
             helmet: Helmet.renderStatic(),
-        };
-    `;
+        };`;
 }
 
-function getClientPageJSX(filepath) {
-    return `
+function getClientPageJSX(filepath, isTypescript) {
+    return isTypescript
+        ? `
+        import React from 'react';
+        import ReactDom from 'react-dom';
+        import Page from '${filepath}';
+
+        ReactDom.hydrate(
+            <Page />,
+            document.getElementById('app')
+        );
+        `
+        : `
         const React = require('react');
         const ReactDom = require('react-dom');
         const Page = require('${filepath}');
@@ -49,8 +72,7 @@ function getClientPageJSX(filepath) {
         ReactDom.hydrate(
             <Page />,
             document.getElementById('app')
-        );
-    `;
+        );`;
 }
 
 module.exports = {

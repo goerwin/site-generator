@@ -1,5 +1,9 @@
 # TODO
 -   typescript support
+    - install typescript
+    - install @types too
+    - tsc --init --jsx react
+    - sourcemaps
 -   tests
 -   improve speed
 

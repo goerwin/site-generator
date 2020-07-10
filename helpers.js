@@ -47,19 +47,24 @@ function getWebpackStats(webpackConfig, options = {}) {
     });
 }
 
-function getOutputStructure({ publicPath, env = 'production', siteDir }) {
+function getOutputStructure({
+    publicPath,
+    env = 'production',
+    siteDir,
+    isTypescript,
+}) {
     const tempSiteDir = path.resolve(__dirname, '.cache/site');
     const mappedEntriesWithPages = {};
     const outputStructure = {};
-    const fileExtPrefixRegex = /\.tsx?$/;
-    const fileExtPrefix = '.tsx';
+    const fileExtPrefix = isTypescript ? 'tsx' : 'jsx';
+    const fileExtPrefixRegex = new RegExp(`\\.${fileExtPrefix}$`);
 
     return Promise.resolve()
         .then(() => {
             fsExtra.removeSync(tempSiteDir);
             fsExtra.copySync(siteDir, tempSiteDir);
 
-            const pages = glob.sync(`**/*${fileExtPrefix}`, {
+            const pages = glob.sync(`**/*.${fileExtPrefix}`, {
                 cwd: path.resolve(tempSiteDir, 'pages'),
             });
 
@@ -89,11 +94,11 @@ function getOutputStructure({ publicPath, env = 'production', siteDir }) {
 
                 fsExtra.outputFileSync(
                     clientFilename,
-                    htmlHelpers.getClientPageJSX(pageJSXFilepath)
+                    htmlHelpers.getClientPageJSX(pageJSXFilepath, isTypescript)
                 );
                 fsExtra.outputFileSync(
                     serverFilename,
-                    htmlHelpers.getServerPageJSX(pageJSXFilepath)
+                    htmlHelpers.getServerPageJSX(pageJSXFilepath, isTypescript)
                 );
             });
 
@@ -154,7 +159,7 @@ function getOutputStructure({ publicPath, env = 'production', siteDir }) {
                 Object.keys(assetsByPage).forEach((page) => {
                     const pageAssets = assetsByPage[page];
 
-                    const ssr = requireFromString(
+                    const { default: ssr } = requireFromString(
                         compilationAssets[page + '.bundle.js'].source()
                     );
 

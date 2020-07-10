@@ -2,7 +2,7 @@ const React = require('react');
 const { Helmet } = require('react-helmet');
 const App = require('../components/App');
 const Layout = require('../components/Layout');
-require('./index.css');
+require('./index.scss');
 
 function Index() {
     return (

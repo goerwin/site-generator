@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
 import favicon from '../images/favicon-32x32.png';
-import './App.css';
+import './App.scss';
 
 interface Props {
     children: React.ReactNode;

@@ -1,5 +1,5 @@
 const React = require('react');
-const styles = require('./Layout.module.css');
+const styles = require('./Layout.module.scss');
 
 function Layout({ children, activePage }) {
     return (

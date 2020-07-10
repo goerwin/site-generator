@@ -1,7 +1,7 @@
 const React = require('react');
 const { Helmet } = require('react-helmet');
 const favicon = require('../images/favicon-32x32.png');
-require('./App.css');
+require('./App.scss');
 
 function App({ children }) {
     return (

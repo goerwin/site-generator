@@ -18,7 +18,7 @@ function getConfigs(attrs = {}) {
                 : '[name].bundle.js',
         },
         resolve: {
-            extensions: ['.js', '.jsx', '.json'],
+            extensions: ['.js', '.jsx', '.json', '.tsx', '.ts'],
         },
         resolveLoader: {
             // For development when using `npm link`
@@ -48,7 +48,7 @@ function getConfigs(attrs = {}) {
                     },
                 },
                 {
-                    test: /\.css$/,
+                    test: /\.s?css$/,
                     use: [
                         { loader: MiniCssExtractPlugin.loader },
                         {

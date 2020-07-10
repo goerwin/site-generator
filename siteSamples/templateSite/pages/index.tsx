@@ -2,7 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import App from '../components/App';
 import Layout from '../components/Layout';
-import './index.css';
+import './index.scss';
 
 function Index() {
     return (

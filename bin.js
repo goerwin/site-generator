@@ -20,6 +20,11 @@ const envOption = [
     'development or production',
     'development',
 ];
+const isTypescriptOption = [
+    '--typescript',
+    'Use Typescript instead of Javascript',
+    false,
+];
 
 program.name('site-generator');
 
@@ -28,16 +33,17 @@ program
     .description('Starts development server')
     .option(...inputDirOption)
     .option(...portOption)
+    .option(...isTypescriptOption)
     .option(...envOption)
-    .action(({ inputDir, port, env }) => {
+    .action(({ inputDir, port, env, typescript }) => {
         const siteDir = path.resolve(inputDir);
-        const args = { siteDir, port, env };
+        const args = { siteDir, port, env, isTypescript: typescript };
 
         nodemon({
             script: path.resolve(__dirname, 'runServer.js'),
             watch: [siteDir],
             args: [JSON.stringify(args)],
-            ext: 'tsx json ts css',
+            ext: 'tsx ts js jsx json css',
         });
 
         nodemon
@@ -59,8 +65,9 @@ program
     .option(...inputDirOption)
     .option(...outputDirOption)
     .option(...publicPathOption)
+    .option(...isTypescriptOption)
     .option(envOption[0], envOption[1], 'production')
-    .action(({ inputDir, outputDir, env, publicPath }) => {
+    .action(({ inputDir, outputDir, env, publicPath, typescript }) => {
         outputDir = path.resolve(outputDir);
         const siteDir = path.resolve(inputDir);
 
@@ -71,6 +78,7 @@ program
                 env,
                 siteDir,
                 publicPath,
+                isTypescript: typescript,
             })
             .then((outputStructure) => {
                 fsExtra.removeSync(outputDir);
@@ -99,7 +107,9 @@ program
 program
     .command('new <siteName>')
     .description('creates a new site')
-    .action((siteName) => {
+    .option(...isTypescriptOption)
+    .action((siteName, { typescript }) => {
+        console.log('typescript', typescript);
         const cwd = path.resolve(process.cwd());
         const siteFolder = path.resolve(cwd, siteName);
         const packagesToInstall = [
@@ -129,14 +139,12 @@ program
             stringHelpers.getPackageJson(siteName)
         );
 
-        shellHelpers.spawnCommand('npm', siteFolder, [
-            'install',
-            '--save',
-            ...packagesToInstall,
-        ])
-            // execPromise(`npm install --save ${packagesToInstall.join(' ')}`, {
-            //     cwd: siteFolder,
-            // })
+        shellHelpers
+            .spawnCommand('npm', siteFolder, [
+                'install',
+                '--save',
+                ...packagesToInstall,
+            ])
             .then(() => {
                 fsExtra.copySync(
                     path.resolve(__dirname, 'siteSamples/templateSite'),
